@@ -1,0 +1,89 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
+#include <string>
+
+using namespace std;
+
+struct Movie{
+    string title, director, genre, year, duration;
+};
+
+//calling sort with different compare functions
+void display(vector<Movie>);
+bool compareByTitle(Movie const& movie1, Movie const& movie2);
+bool compareByDirector(Movie const& movie1, Movie const& movie2);
+bool compareByGenre(Movie const& movie1, Movie const& movie2);
+
+
+int main(){
+    ifstream inputFile;
+    string line;
+    int choice;
+    Movie movie;
+    vector<Movie>movies;
+    
+    inputFile.open("Movie_entries.txt");
+    while(getline(inputFile, line)){
+        cout<<line<<endl;
+        stringstream lineStream(line); //making the line into linestream
+        
+        //read the each line of the file
+        getline(lineStream, movie.title,',');
+        getline(lineStream, movie.director,',');
+        getline(lineStream, movie.genre,',');
+        getline(lineStream, movie.year,',');
+        getline(lineStream, movie.duration,',');
+        movies.push_back(movie);
+        
+    }
+    inputFile.close();
+    
+    do{
+        cout<<"You can sort the movies by title, director, or genre. Please enter the corresponding number"<<endl;
+        cout<<"1:To sort by title"<<endl;
+        cout<<"2:To sort by director"<<endl;
+        cout<<"3:To sort by genre"<<endl;
+        cout<<"0:To exit the program"<<endl;
+        cin>>choice;
+        
+        
+        if(choice==1){
+            sort(movies.begin(),movies.end(),compareByTitle);
+        }else if(choice==2){
+            sort(movies.begin(),movies.end(),compareByDirector);
+        }else if(choice==3){
+            sort(movies.begin(),movies.end(),compareByGenre);
+        }else if(choice==0){
+            cout<<"Goodbye!"<<endl;
+            break;
+        }
+        
+        display(movies);
+    }while(choice<=3);
+    
+}
+
+void display(vector<Movie>movies){
+
+    cout<<left<<setw(25)<<"\nTitle"<<left<<setw(15)<<"Director"<<left<<setw(15)<<"Genre"<<left<<setw(15)<<"Year Released"<<left<<setw(15)<<"Duration"<<endl;
+    
+    //loop through the movie list and display the data
+    for(int i = 0; i<movies.size();++i){
+        cout<<left<<setw(25)<<movies[i].title<<left<<setw(15)<<movies[i].director<<left<<setw(15)<<movies[i].genre<<left<<setw(15)<<movies[i].year<<left<<setw(15)<<movies[i].duration<<endl;
+    }
+}
+
+//different compare functions
+bool compareByTitle(Movie const& movie1, Movie const& movie2){
+    return movie1.title<movie2.title;
+}
+bool compareByDirector(Movie const& movie1, Movie const& movie2){
+    return movie1.director<movie2.director;
+}
+bool compareByGenre(Movie const& movie1, Movie const& movie2){
+    return movie1.genre<movie2.genre;
+}
